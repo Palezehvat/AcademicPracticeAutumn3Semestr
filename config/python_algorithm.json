@@ -1,0 +1,70 @@
+// Базовый пример с двумя производителями и одним потребителем.
+//
+// Producer1 -\
+//            Combiner -> Consumer
+// Producer2 -/
+{
+"simtime": 75000,
+    "modules": [
+        {
+            "name": "python_algorithm1",
+            "instance_of": "python_algorithm",
+            "config": {
+                "name": "../plugins/python_algorithm/py_algorithms/producer",
+                "algo_name": "producer",
+                "config": 
+                {
+                    "data": [3, 2, 1]
+                }
+            },
+            "params": {},
+            "clock": 100,
+            "duty": 20
+        },
+        {
+            "name": "python_algorithm2",
+            "instance_of": "python_algorithm",
+            "config": {
+                "name": "../plugins/python_algorithm/py_algorithms/producer",
+                "algo_name": "producer",
+                "config": 
+                {
+                    "data": [4, 5, 7, 6]
+                }
+            },
+            "params": {},
+            "clock": 500
+        },
+        {
+            "name": "combiner",
+            "instance_of": "combiner",
+            "params": {
+                "s1": ["python_algorithm1", "data", "pull"],
+                "s2": ["python_algorithm2", "data", "pull"]
+            },
+            "clock": 300,
+            "export": [
+                {
+                    "type": "file",
+                    "direction": "input",
+                    "params": ["s1", "s2"],
+                    "filename": "comb_in.csv"
+                },
+                {
+                    "type": "file",
+                    "direction": "output",
+                    "params": ["data"],
+                    "filename": "comb_out.csv"
+                }
+            ]
+        },
+        {
+            "name": "consumer",
+            "instance_of": "consumer",
+            "params": {
+                "s": ["combiner", "data", "push"]
+            },
+            "clock": 2000
+        }
+    ]
+}

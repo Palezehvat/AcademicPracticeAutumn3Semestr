@@ -1,0 +1,1 @@
+add_subdirectory(smm-2ng)
